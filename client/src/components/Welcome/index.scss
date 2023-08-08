@@ -1,0 +1,15 @@
+.welcome {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    color: aliceblue;
+
+    img {
+        height: 20rem;
+    }
+
+    span {
+        color: #4e00ff;
+    }
+}
