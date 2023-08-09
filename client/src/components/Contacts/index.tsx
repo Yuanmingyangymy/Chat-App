@@ -9,7 +9,6 @@ interface contactsType {
     changeChat: any
 }
 const Contacts: React.FC<contactsType> = ({ contacts, currentUser, changeChat }) => {
-    console.log(contacts);
 
 
     const [currentUserName, setCurrentUserName] = useState<string>()
