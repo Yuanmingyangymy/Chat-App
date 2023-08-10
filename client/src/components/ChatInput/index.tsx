@@ -23,7 +23,7 @@ const ChatInput: React.FC<chatInputType> = ({ handleSendMsg }) => {
     const [msg, setMsg] = useState('')
 
     // 发送信息
-    const sendChat = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const sendChat = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         if (msg.trim().length > 0) {
             handleSendMsg(msg)
@@ -43,10 +43,13 @@ const ChatInput: React.FC<chatInputType> = ({ handleSendMsg }) => {
             </div>
 
             <div className="inputArea">
-                <input type="text" placeholder='send what you want to say~'
-                    value={msg}
-                    onChange={(e) => setMsg(e.target.value)} />
-                <button onClick={sendChat}><SendOutlined /></button>
+                <form onSubmit={sendChat}>
+                    <input type="text" placeholder='send what you want to say~'
+                        value={msg}
+                        onChange={(e) => setMsg(e.target.value)} />
+                    <button type='submit'><SendOutlined /></button>
+                </form>
+
 
             </div>
         </div>

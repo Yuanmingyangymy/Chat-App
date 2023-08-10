@@ -7,11 +7,13 @@ import { useNavigate } from 'react-router-dom'
 import Contacts from '../../components/Contacts'
 import Welcome from '../../components/Welcome'
 import ChatBox from '../../components/ChatBox'
-
+import { io, Socket } from 'socket.io-client'
 // 退出登录按钮
 import { FloatButton } from 'antd';
 import { CloseCircleOutlined } from '@ant-design/icons';
 const Chat: React.FC = () => {
+
+
     const navigate = useNavigate()
     const [contacts, setContacts] = useState()
     // 获取当前登录用户的信息，之后将其id传给后台，筛选出其他用户在展示到聊天框里面
@@ -36,7 +38,20 @@ const Chat: React.FC = () => {
 
         }
     }, [])
+    // socket.io在挂载时将当前用户传给后台
 
+    const socket = useRef<Socket | null>(null)
+    useEffect(() => {
+        if (currentUser) {
+            socket.current = io(host)
+            socket.current.emit("add-user", currentUser._id)
+        }
+        return () => {
+            if (socket) {
+                socket.current?.disconnect()
+            }
+        }
+    }, [currentUser])
 
     const fetchUsers = async () => {
 
@@ -76,7 +91,7 @@ const Chat: React.FC = () => {
                     isLoading && currentChat === undefined ? (
                         <Welcome currentUser={currentUser} />
                     ) : (
-                        <ChatBox currentChat={currentChat} currentUser={currentUser} />
+                        <ChatBox currentChat={currentChat} currentUser={currentUser} socket={socket} />
                     )
 
                 }

@@ -30,7 +30,6 @@ module.exports.register = async (req, res) => {
 
 module.exports.login = async (req, res) => {
     try {
-        console.log(req.body);
         const username = req.body.username.trim()
         const password = req.body.password.trim()
         const user = await User.findOne({ username })

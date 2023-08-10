@@ -5,17 +5,17 @@ import ChatInput from '../ChatInput';
 import axios from 'axios';
 import { getAllMessageRoute, sendMessageRoute, host } from '../../utils/APIRoute';
 import { v4 as uuidv4 } from 'uuid';
-import { io, Socket } from 'socket.io-client'
+
 interface chatBoxType {
     currentChat: any
     currentUser: any
+    socket: any
 }
 
-const socket: Socket = io(host)
-// const socket = io.connect("http://127.0.0.1:3001")
 
 
-const ChatBox: React.FC<chatBoxType> = ({ currentChat, currentUser }) => {
+
+const ChatBox: React.FC<chatBoxType> = ({ currentChat, currentUser, socket }) => {
     type msgType = {
         fromSelf: boolean,
         message: string
@@ -36,22 +36,10 @@ const ChatBox: React.FC<chatBoxType> = ({ currentChat, currentUser }) => {
 
 
 
-    // socket.io在挂载时将当前用户传给后台
-    useEffect(() => {
 
-        if (currentUser) {
-            socket.emit("add-user", currentUser._id)
-        }
-        return () => {
-            if (socket) {
-                socket.disconnect()
-            }
-        }
-
-    }, [currentUser])
     // 发送消息
     const handleSendMsg = async (msg: string) => {
-        socket.emit("send-msg", {
+        socket.current.emit("send-msg", {
             to: currentChat._id,
             from: currentUser._id,
             message: msg
@@ -74,8 +62,8 @@ const ChatBox: React.FC<chatBoxType> = ({ currentChat, currentUser }) => {
     }
     const [arrivalMsg, setArrivalMsg] = useState<arrivalType>()
     useEffect(() => {
-        if (socket) {
-            socket.on("msg-receive", (msg: string) => {
+        if (socket.current) {
+            socket.current.on("msg-receive", (msg: string) => {
                 setArrivalMsg({ fromSelf: false, message: msg })
             })
         }
